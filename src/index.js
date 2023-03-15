@@ -11,6 +11,8 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
+connection
+
 app.get('/fruits', async(req, res) => {
   const UNSPLASH_API_KEY = 'ZNR7K8316b4RpWQw2Jtz3v-_OiQV235WCYjTje-2kSM';
     const agent = new https.Agent({
@@ -18,6 +20,7 @@ app.get('/fruits', async(req, res) => {
     });
       
     const data = await (await axios.get("https://localhost:44316/api/fruits/datos", {httpsAgent: agent})).data;
+    console.log(data);
     res.json(data)
 
     connection.query("SELECT * FROM fruit", (err, res)=>{
