@@ -4,6 +4,7 @@ import bodyParser from 'body-parser';
 import axios from 'axios';
 import https from 'https';
 import connection from './sql/connection.js';
+import { PORT } from './config.js';
 
 const app = express();
 
@@ -65,9 +66,8 @@ app.get("/fruits/modo", async(req, res)=>{
     res.json(data.data)
 })
 
-const port = 4000;
-app.listen(port, () => {
-  console.log(`Servidor escuchando en el puerto ${port}`);
+app.listen(PORT, () => {
+  console.log(`Servidor escuchando en el puerto ${PORT}`);
   connection.connect(()=>{
     console.log("conect db");
   })
