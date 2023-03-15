@@ -7,7 +7,7 @@ import {
     DB_PORT
   } from '../config.js'
 
-const connection = mysql.createPool({
+const connection = mysql.createConnection({
     user: DB_USER,
     password: DB_PASSWORD,
     host: DB_HOST,
