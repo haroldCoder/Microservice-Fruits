@@ -8,7 +8,7 @@ namespace FruitApi.Controllers
 {
     [Route("api/fruits")]
     [ApiController]
-    public class FruitsController : ControllerBase
+    public class FruitController : ControllerBase
     {
         public class Fruta
         {
