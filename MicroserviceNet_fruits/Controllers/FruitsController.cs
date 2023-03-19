@@ -43,7 +43,7 @@ namespace FruitApi.Controllers
         [HttpGet("datos")]
         public IEnumerable<object> GetDatos()
         {
-            var datos = from i in ObtenerFrutas() select new {i.nombre, i.tipo };
+            var datos = from i in ObtenerFrutas() select new {i.Id, i.nombre, i.tipo };
             return datos;
         }
 
