@@ -11,6 +11,8 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
+app.set("server", "https://localhost:44316/api/fruits/datos")
+
 connection
 
 app.get('/fruits', async(req, res) => {
@@ -18,10 +20,16 @@ app.get('/fruits', async(req, res) => {
     const agent = new https.Agent({
         rejectUnauthorized: false // Ignora la verificación del certificado
     });
-      
-    const data = await (await axios.get("https://localhost:44316/api/fruits/datos", {httpsAgent: agent})).data;
-    console.log(data);
-    res.json(data)
+    let data;
+    try {
+      data = await (await axios.get(app.get("server"), {httpsAgent: agent})).data;
+      res.json(data)
+    } catch (error) {
+      app.set("server", "http://www.fruits-api.somee.com/api/fruits/datos")
+      data = await (await axios.get(app.get("server"), {httpsAgent: agent})).data;
+      res.json(data)
+    } 
+    
 
     connection.query("SELECT * FROM fruit", (err, res)=>{
       if(res.length == 0){
@@ -64,9 +72,16 @@ app.get("/fruits/modo", async(req, res)=>{
     const agent = new https.Agent({
         rejectUnauthorized: false // Ignora la verificación del certificado
     });
-      
-    const data = await axios.get("https://localhost:44316/api/fruits/modo", {httpsAgent: agent});
-    res.json(data.data)
+    let data;
+    try {
+      app.set("server", "https://localhost:44316/api/fruits/modo")
+      data = await (await axios.get(app.get("server"), {httpsAgent: agent})).data;
+      res.json(data)
+    } catch (error) {
+      app.set("server", "http://www.fruits-api.somee.com/api/fruits/modo")
+      data = await (await axios.get(app.get("server"), {httpsAgent: agent})).data;
+      res.json(data)
+    } 
 })
 
 app.listen(PORT, () => {
