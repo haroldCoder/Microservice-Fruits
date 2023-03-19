@@ -39,7 +39,7 @@ app.get('/fruits', async(req, res) => {
               const results = response.data.results;
               if (results.length > 0) {
                 console.log('URL de la imagen:', results[0].urls.regular);
-                connection.query(`INSERT INTO fruit (id, nombre, tipo, img) VALUES (${element.id}, "${element.nombre}", "${element.tipo}", "${results[0].urls.regular}")`, (err, res) => {
+                connection.query(`INSERT INTO fruit (id, nombre, tipo, img) VALUES (${element.Id}, "${element.nombre}", "${element.tipo}", "${results[0].urls.regular}")`, (err, res) => {
                   if (err) throw err;
                   console.log('Fruit added');
                 });
