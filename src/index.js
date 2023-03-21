@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { response } from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import axios from 'axios';
@@ -82,6 +82,22 @@ app.get("/fruits/modo", async(req, res)=>{
       data = await (await axios.get(app.get("server"), {httpsAgent: agent})).data;
       res.json(data)
     } 
+})
+
+app.get("/users", (req, res)=>{
+  connection.query("SELECT * FROM users", (err, response)=>{
+    res.json(response)
+  })
+})
+
+app.post("/users", (req, res)=>{
+  const {name, password} = req.body;
+
+  connection.query(`INSERT INTO users(name, password, create_time) VALUES('${name}', '${password}', NOW())`, (err, response)=>{
+    if(err) throw err;
+    console.log('new user aded');
+    res.json(true);
+  });
 })
 
 app.listen(PORT, () => {
