@@ -93,7 +93,7 @@ app.post("/users", async (req, res) => {
 
   let resp;
   try{
-      resp = await (await axios.get('https://localhost:44316/api/users/validate/'+name,{ httpsAgent: agent })).d
+      resp = await (await axios.get('https://localhost:44316/api/users/validate/'+name,{ httpsAgent: agent })).data
   }
   catch(err){
       resp = await (await axios.get("http://www.fruits-api.somee.com/api/users/validate/"+name)).data;
