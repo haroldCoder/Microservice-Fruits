@@ -14,12 +14,12 @@ app.use(bodyParser.json());
 app.set("server", "https://localhost:44316/api/fruits/datos")
 
 connection
+const agent = new https.Agent({
+  rejectUnauthorized: false // Ignora la verificación del certificado
+});
 
 app.get('/fruits', async(req, res) => {
   const UNSPLASH_API_KEY = 'ZNR7K8316b4RpWQw2Jtz3v-_OiQV235WCYjTje-2kSM';
-    const agent = new https.Agent({
-        rejectUnauthorized: false // Ignora la verificación del certificado
-    });
     let data;
     try {
       data = await (await axios.get(app.get("server"), {httpsAgent: agent})).data;
@@ -69,9 +69,7 @@ app.get("/fruits/data", async(req, res)=>{
 })
 
 app.get("/fruits/modo", async(req, res)=>{
-    const agent = new https.Agent({
-        rejectUnauthorized: false // Ignora la verificación del certificado
-    });
+    
     let data;
     try {
       app.set("server", "https://localhost:44316/api/fruits/modo")
@@ -90,14 +88,59 @@ app.get("/users", (req, res)=>{
   })
 })
 
-app.post("/users", (req, res)=>{
-  const {name, password} = req.body;
+app.post("/users", async (req, res) => {
+  const { name, password } = req.body;
 
-  connection.query(`INSERT INTO users(name, password, create_time) VALUES('${name}', '${password}', NOW())`, (err, response)=>{
-    if(err) throw err;
-    console.log('new user aded');
-    res.json(true);
-  });
+  let resp;
+  try{
+      resp = await (await axios.get('https://localhost:44316/api/users/validate/'+name,{ httpsAgent: agent })).d
+  }
+  catch(err){
+      resp = await (await axios.get("http://www.fruits-api.somee.com/api/validate/"+name)).data;
+  }
+  
+  if(resp == ""){
+    connection.query(`INSERT INTO users(name, password, create_time) VALUES('${name}', '${password}', NOW())`, (err, response)=>{
+      if(err) throw err;
+      console.log('new user aded');
+      res.json(true);
+    });
+  }
+  else{
+    res.send(`the user ${resp} already exists`);
+  }
+});
+
+app.get("/users/validate/:name/:password", async(req, res)=>{
+  const {name, password} = req.params;
+
+  try{
+    try{
+      await axios.get("https://localhost:44316/api/users/login/"+name+"/"+password, {httpsAgent: agent})
+      .then((resp) => {
+        if(resp.data != ""){
+          res.json({"status": "ok","data": resp.data})
+        }
+        else{
+          res.json("error");
+        }
+      })
+    }
+    catch(err){
+      await axios.get("http://www.fruits-api.somee.com/api/users/login/"+name+"/"+password, {httpsAgent: agent})
+      .then((resp) => {
+        if(resp.data != ""){
+          res.json({"status": "ok","data": resp.data})
+        }
+        else{
+          res.json("error");
+        }
+      })
+    }
+  }
+  catch(err){
+    res.send(err)
+  }
 })
 
 app.listen(PORT, () => {
