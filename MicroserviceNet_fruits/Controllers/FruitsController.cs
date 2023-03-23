@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Http;
+using Newtonsoft.Json;
 
 namespace FruitApi.Controllers
 {
-    [Route("api/fruits")]
+    [Route("api")]
     [ApiController]
     public class FruitsController : ControllerBase
     {
@@ -15,6 +17,12 @@ namespace FruitApi.Controllers
             public int Id { get; set; }
             public string nombre { get; set; }
             public string tipo { get; set; }
+        }
+        public class User
+        {
+            public string name { get; set; }
+            public string password { get; set; }
+            public int id { get; set; }
         }
 
         public Fruta[] ObtenerFrutas()
@@ -31,8 +39,8 @@ namespace FruitApi.Controllers
 
             return frutas;
         }
-        // GET api/values
-        [HttpGet]
+
+        [HttpGet("fruits")]
         public IEnumerable<object> Get()
         {
             IEnumerable<string> Datos_frutas = ObtenerFrutas().Select(x => $"-{x.nombre} de tipo {x.tipo}");
@@ -40,14 +48,14 @@ namespace FruitApi.Controllers
         }
 
         // GET api/values/5
-        [HttpGet("datos")]
+        [HttpGet("fruits/datos")]
         public IEnumerable<object> GetDatos()
         {
             var datos = from i in ObtenerFrutas() select new {i.Id, i.nombre, i.tipo };
             return datos;
         }
 
-        [HttpGet("modo")]
+        [HttpGet("fruits/modo")]
         public IEnumerable<object> Modo_conservado()
         {
             var conservado = new[]
@@ -65,6 +73,56 @@ namespace FruitApi.Controllers
                                             cn.modo_reserva
                                         };
             return unir_fruta_conservado;
+        }
+        [HttpGet("users/validate/{name}")]
+        public async Task<object> Validation(string name)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                HttpResponseMessage response = await client.GetAsync("http://localhost:4000/users");
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    User[] users = JsonConvert.DeserializeObject<User[]>(content);
+
+                    //var getusers = new[] { new { name = "", password = "" } };
+                    //foreach (var i in users)
+                    //{
+                    //    getusers = new[] { new { name = i.name, password = i.password } };
+                    //}
+                    var getusers = from i in users where i.name == name select i.name;
+
+                    return getusers;
+                }
+                else
+                {
+                    Console.WriteLine($"Error {response.StatusCode}");
+                }  
+            }
+            return "";
+        }
+
+        [HttpGet("users/login/{name}/{password}")]
+        public async Task<object> Login(string name, string password)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                HttpResponseMessage response = await client.GetAsync("http://localhost:4000/users");
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    User[] users = JsonConvert.DeserializeObject<User[]>(content);
+
+                    var getusers = from i in users where i.name == name && i.password == password select new[]{ new { i.name, i.id } };
+
+                    return getusers;
+                }
+                else
+                {
+                    Console.WriteLine($"Error {response.StatusCode}");
+                }
+            }
+            return "";
         }
 
         // POST api/values
