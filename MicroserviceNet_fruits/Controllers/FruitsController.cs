@@ -86,7 +86,7 @@ namespace FruitApi.Controllers
                 }
                 catch (Exception err)
                 {
-                    response = await client.GetAsync("https://microservice-fruits-production-1b58.up.railway.app/users");
+                    response = await client.GetAsync("https://microservice-fruits-production-d707.up.railway.app/users");
                 }
                 if (response.IsSuccessStatusCode)
                 {
@@ -122,7 +122,7 @@ namespace FruitApi.Controllers
                 }
                 catch (Exception err)
                 {
-                    response = await client.GetAsync("https://microservice-fruits-production-1b58.up.railway.app/users");
+                    response = await client.GetAsync("https://microservice-fruits-production-d707.up.railway.app/users");
                 }
                 if (response.IsSuccessStatusCode)
                 {
