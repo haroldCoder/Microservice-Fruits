@@ -103,7 +103,7 @@ app.post("/users", async (req, res) => {
     connection.query(`INSERT INTO users(name, password, create_time) VALUES('${name}', '${password}', NOW())`, (err, response)=>{
       if(err) throw err;
       console.log('new user aded');
-      res.json(true);
+      res.json(resp);
     });
   }
   else{
