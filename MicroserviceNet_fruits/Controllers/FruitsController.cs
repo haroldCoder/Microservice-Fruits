@@ -79,7 +79,15 @@ namespace FruitApi.Controllers
         {
             using (HttpClient client = new HttpClient())
             {
-                HttpResponseMessage response = await client.GetAsync("http://localhost:4000/users");
+                HttpResponseMessage response;
+                try
+                {
+                    response = await client.GetAsync("http://localhost:4000/users");
+                }
+                catch (Exception err)
+                {
+                    response = await client.GetAsync("https://microservice-fruits-production-1b58.up.railway.app/users");
+                }
                 if (response.IsSuccessStatusCode)
                 {
                     var content = await response.Content.ReadAsStringAsync();
@@ -107,7 +115,15 @@ namespace FruitApi.Controllers
         {
             using (HttpClient client = new HttpClient())
             {
-                HttpResponseMessage response = await client.GetAsync("http://localhost:4000/users");
+                HttpResponseMessage response;
+                try
+                {
+                    response = await client.GetAsync("http://localhost:4000/users");
+                }
+                catch (Exception err)
+                {
+                    response = await client.GetAsync("https://microservice-fruits-production-1b58.up.railway.app/users");
+                }
                 if (response.IsSuccessStatusCode)
                 {
                     var content = await response.Content.ReadAsStringAsync();
