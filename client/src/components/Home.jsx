@@ -12,7 +12,7 @@ export default function Home() {
             const response = await axios.get('http://localhost:4000/fruits/data');
             setData(response.data);
           } catch (error) {
-            const response =  await axios.get('https://microservice-fruits-production-1b58.up.railway.app/fruits/data');
+            const response =  await axios.get('https://microservice-fruits-production-d707.up.railway.app/fruits/data');
             setData(response.data);
           }
       }, []);
