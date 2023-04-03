@@ -7,27 +7,36 @@ export default function Login(props) {
     const [password, setPassword] = useState('');
     const [log, setLog] = useState(false);
 
-    const createUser = (e) =>{
-        e.preventDefault();
-        if(log){
-            axios.post('http://localhost:4000/users', {
+    const apiUrl = 'https://microservice-fruits-production-d707.up.railway.app'; // URL de la API
+
+    const createUser = async (e) => {
+    e.preventDefault();
+    try {
+        if (log) {
+            await axios.post(`${apiUrl}/users`, {
                 "name": name,
                 "password": password
-            }).then((res)=>alert(res.data))
-            setName('')
-            setPassword('')
+            });
+            alert('Usuario creado con éxito');
+            setName('');
+            setPassword('');
+        } 
+        else {
+            const response = await axios.get(`${apiUrl}/users/validate/${name}/${password}`);
+            if (response.data == 'error') {
+                alert('El usuario no existe');
+            } 
+            else {
+                console.log(response.data);
+                alert('Bienvenido');
+            }
         }
-        else
-            axios.get(`http://localhost:4000/users/validate/${name}/${password}`)
-            .then((resp)=>{
-                if(resp.data == "error"){
-                    alert("user no exist")
-                }
-                else{
-                    console.log(resp.data);
-                }
-            })
     } 
+    catch (error) {
+        console.error(error);
+        alert('Hubo un error al hacer la petición a la API');
+    }
+    };
   return (
     <div className="main bg-slate-900 h-[70vh] p-3 rounded-lg opacity-95">
         <div className="head flex justify-between">
